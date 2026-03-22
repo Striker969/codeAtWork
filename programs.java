@@ -1377,11 +1377,19 @@ import java.util.*;
 	}
 
 
-    //anagram(optimized)
-    /**
-     * TC = O(n)
+//anagram(optimized)
+/**
+ * TC = O(n)
 SC = O(1)  (fixed 26 size)
-     */
+Input: s = "anagram", t = "nagaram"
+
+Output: true
+increases count for s 
+decreases count for t
+eg:-
+count[a] = 1
+count[n] = -1
+*/
 
     class Solution {
     public boolean isAnagram(String s, String t) {
@@ -1753,6 +1761,7 @@ class Main {
 
 //String compression (leetcode)
 //input -> ["a","a","b","b","c","c","c"]
+//output -> 6 -  meaning a2b2c3
 class Solution {
     public int compress(char[] chars) {
         int i = 0; // read pointer
@@ -1777,6 +1786,7 @@ class Solution {
                 //tocharArray() is used separate the string to an array. assume "ab"->["a", "b"]
                 String c = String.valueOf(count);
                 for (char ch : c.toCharArray()) {
+                    //write the count next to the chracter
                     chars[k++] = ch;
                 }
             }

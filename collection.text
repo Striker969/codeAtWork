@@ -1,0 +1,322 @@
+
+JAVA COLLECTION FRAMEWORK – CLEAN NOTES
+
+----------------------------------------
+1. COLLECTION
+----------------------------------------
+Collection is a unified architecture used to store and manipulate groups of objects.
+It consists of interfaces and classes.
+
+All collection interfaces and classes belong to the package:
+java.util
+
+Collection framework provides ready‑made data structures such as:
+List, Set, Queue, Map
+
+NOTE:
+Map is part of the collection framework but it does NOT extend the Collection interface.
+
+----------------------------------------
+2. WHY COLLECTIONS?
+----------------------------------------
+Collections are used to overcome the limitations of arrays.
+
+Limitations of Arrays:
+- Fixed size
+- Can store only one type of data
+- Limited built‑in methods
+
+Advantages of Collections:
+- Dynamic size
+- Can store homogeneous and heterogeneous objects
+- Built‑in data structures
+- Powerful utility methods
+
+----------------------------------------
+3. MAIN INTERFACES OF COLLECTION
+----------------------------------------
+The Collection interface has three main subinterfaces:
+
+1. List
+2. Set
+3. Queue
+
+(Map is separate from Collection hierarchy)
+
+----------------------------------------
+4. COMMON COLLECTION METHODS
+----------------------------------------
+add(Object obj)
+add(int index, Object obj)
+addAll(Collection c)
+remove(Object obj)
+remove(int index)
+removeAll(Collection c)
+retainAll(Collection c)
+size()
+contains(Object obj)
+clear()
+
+----------------------------------------
+5. LIST INTERFACE
+----------------------------------------
+List is used when:
+- Order of insertion must be maintained
+- Duplicate elements are allowed
+- Index based access is required
+
+Features:
+- Dynamic size
+- Indexed collection
+- Allows duplicates
+- Maintains insertion order
+- Allows null values
+- Random access using index
+- Not automatically sorted
+
+List Implementations:
+1. ArrayList
+2. Vector
+3. LinkedList
+
+----------------------------------------
+6. ARRAYLIST
+----------------------------------------
+ArrayList is a class that implements the List interface.
+
+Features:
+- Dynamic size
+- Allows duplicates
+- Maintains insertion order
+- Allows null values
+- Fast random access
+- Not synchronized (not thread safe)
+
+Default Capacity = 10
+
+Capacity Growth:
+newCapacity = oldCapacity + (oldCapacity / 2)
+
+Example:
+ArrayList<Integer> list = new ArrayList<>();
+
+Constructors:
+ArrayList()
+ArrayList(int initialCapacity)
+ArrayList(Collection c)
+
+----------------------------------------
+7. VECTOR
+----------------------------------------
+Vector is a legacy class that implements List.
+
+Features:
+- Dynamic size
+- Allows duplicates
+- Maintains insertion order
+- Allows null
+- Synchronized (thread safe)
+- Slower performance than ArrayList
+
+Capacity growth:
+newCapacity = oldCapacity * 2
+
+----------------------------------------
+8. LINKEDLIST
+----------------------------------------
+LinkedList implements both:
+List and Queue (Deque)
+
+It uses a Doubly Linked List data structure.
+
+Features:
+- Dynamic size
+- Allows duplicates
+- Maintains insertion order
+- Allows null
+- Fast insertion and deletion
+- Slower random access than ArrayList
+
+Queue methods used in LinkedList:
+peek()  -> retrieve head element without removing
+poll()  -> retrieve and remove head element
+
+NOTE:- ArrayList is better for fast random access, while LinkedList is better for frequent insertions and deletions.
+
+----------------------------------------
+9. QUEUE INTERFACE
+----------------------------------------
+Queue follows FIFO principle (First In First Out).
+
+Common Implementations:
+1. LinkedList
+2. PriorityQueue
+
+----------------------------------------
+10. PRIORITY QUEUE
+----------------------------------------
+PriorityQueue stores elements according to priority.
+
+Features:
+- Dynamic size
+- Does not allow heterogeneous data
+- Not indexed
+- Allows duplicates
+- Automatically sorted by priority
+- Does not allow null
+- Does not maintain insertion order
+
+Example:
+PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+----------------------------------------
+11. SET INTERFACE
+----------------------------------------
+Set is used when duplicate elements are not allowed.
+
+Features:
+- Dynamic size
+- No duplicates allowed
+- Not indexed
+- Can store heterogeneous data
+- Allows one null element (except TreeSet)
+
+Set Implementations:
+1. HashSet
+2. LinkedHashSet
+3. TreeSet
+
+----------------------------------------
+12. HASHSET
+----------------------------------------
+HashSet stores unique elements using hashing.
+
+Features:
+- No duplicates
+- Allows one null
+- No insertion order guarantee
+- Fast operations
+
+Example:
+HashSet<Integer> set = new HashSet<>();
+
+----------------------------------------
+13. LINKEDHASHSET
+----------------------------------------
+LinkedHashSet extends HashSet.
+
+Features:
+- No duplicates
+- Maintains insertion order
+- Allows one null
+
+----------------------------------------
+14. TREESET
+----------------------------------------
+TreeSet stores elements in sorted order.
+
+Features:
+- No duplicates
+- Automatically sorted
+- Does not allow null
+- Does not allow heterogeneous data
+
+Uses Red‑Black Tree internally.
+
+----------------------------------------
+15. MAP INTERFACE
+----------------------------------------
+Map stores data in key‑value pairs.
+
+Syntax:
+key -> value
+
+Features:
+- Keys must be unique
+- Values can be duplicate
+- Not part of Collection interface
+- Stored as pairs
+
+Example:
+Map<Integer, String> map = new HashMap<>();
+
+----------------------------------------
+16. HASHMAP
+----------------------------------------
+HashMap stores key‑value pairs using hashing.
+
+Features:
+- One null key allowed
+- Multiple null values allowed
+- No insertion order
+- Fast lookup
+
+Example:
+HashMap<Integer, String> map = new HashMap<>();
+map.put(1, "Apple");
+map.put(2, "Banana");
+
+----------------------------------------
+17. LINKEDHASHMAP
+----------------------------------------
+LinkedHashMap maintains insertion order.
+
+Features:
+- One null key
+- Multiple null values
+- Maintains insertion order
+
+----------------------------------------
+18. TREEMAP
+----------------------------------------
+TreeMap stores keys in sorted order.
+
+Features:
+- No null key allowed
+- Values can be null
+- Keys are sorted automatically
+- Uses Red‑Black Tree
+
+----------------------------------------
+19. HASHTABLE
+----------------------------------------
+Hashtable is a legacy class similar to HashMap.
+
+Features:
+- No null key
+- No null value
+- Synchronized
+- Slower than HashMap
+
+----------------------------------------
+20. COLLECTIONS UTILITY CLASS
+----------------------------------------
+Collections is a utility class that provides static methods.
+
+Common methods:
+Collections.sort(list)
+Collections.reverse(list)
+Collections.binarySearch(list, key)
+
+Package:
+java.util
+
+----------------------------------------
+21. FOR-EACH LOOP
+----------------------------------------
+Used to traverse collections without using index.
+
+Syntax:
+
+for(datatype variable : collectionName)
+{
+    // code
+}
+
+Example:
+
+for(Integer num : list)
+{
+    System.out.println(num);
+}
+
