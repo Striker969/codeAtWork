@@ -2453,7 +2453,7 @@ that means this is the first time we’re seeing that repeated character.
 
 class Main {
     public static void main(String[] args) {
-        String a="abcbc";
+        String a="abcabcbb";
         jav(a);
     }
     public static void jav(String c){
@@ -3810,6 +3810,8 @@ Now XOR bit by bit:
   whatever value xor has at the end of the loop is the missing number —
 because all other numbers cancel out using XOR.
  */
+
+//we are doing this because the array is from 0-n so we can use 0-n indices to cancel the duplicates with the array, we are using XOR to cancel the duplicates by xoring all indices with the array elements(0 ^ 1 ^ 2 ^ 3) ^ (3 ^ 0 ^ 1)
 class Main {
     public static void main(String[] args) {
         int[] nums = {3, 0, 1};
@@ -3822,6 +3824,7 @@ class Main {
 		 * But expected range is 0 → n
 		 * so we manually include n
 		 */
+        //"Since the array contains numbers from 0 to n, but the loop only covers indices 0 to n-1, we initialize xor with n to include it. This ensures we XOR all numbers from 0 to n."
         int xor = nums.length;
 
         for (int i = 0; i < nums.length; i++) {

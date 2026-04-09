@@ -1,4 +1,4 @@
-/********************************************Array programs and hashing***********************************************/
+/********************************************Array programs and hashing**********************************************/
 //Two sum problem for the unsorted array
 //SC and TC = O(n)
 class Solution {
@@ -60,17 +60,41 @@ class Solution {
 //TC --> One pass for prefix and One pass for suffix so -> O(n + n) = O(n)
 //SC --> O(1) Only using one result array Output array does not count as extra space (LeetCode rule)
 // TC=O(n) and SC =O(1)
+
+// for every index i
+//answer[i] = product of elements before i  *  product of elements after i
+
+/**For each index we need the product of elements before and after it.
+I first compute prefix products and store them in the result array.
+Then I traverse from right to left maintaining a suffix product and multiply it with the prefix value.
+This allows solving the problem in O(n) time and O(1) extra space without using division.
+*/
+
+//Input: nums = [1,2,3,4]
+//Output: [24,12,8,6]
+
 class Solution {
     public int[] productExceptSelf(int[] nums) {
         int n[]=new int[nums.length];
+        //n[0]=1 because there are no elements before the first element
         n[0]=1;
+        //build prefix product
+        //answer[i] = product of elements before i
         for(int i=1;i<nums.length;i++){
             n[i]=n[i-1]*nums[i-1];
         }
+        //build suffix product
+        //int suffix=1 because there are no elements after the last element
+        //suffix starts as 1 because:
+        //→ initially there are NO elements on the right
+        //→ product of nothing = 1
         int suffix=1;
         for(int i=nums.length-1;i>=0;i--){
+            //suffix is multiplied with n[i] to get the product of elements after the current index
             n[i]=n[i]*suffix;
             suffix=suffix*nums[i];
+            //reason why suffix is multiplied with nums[i] is because we need to get the product of elements after the current index
+            //suffix should be multiplied with nums[i] to get the product of elements after the current index
         }
         return n;
     }
@@ -146,29 +170,86 @@ class Solution {
 
 
 //Majority element
-//input -> [3,2,3]
+//input -> [3,2,3] and input -> [2,2,1,1,1,2,2] -> 2
 //output -> 3
 //Matching elements increase the count and different elements decrease it. The final candidate will be the majority element. This runs in O(n) time and O(1) space.
+//I use Boyer-Moore Voting Algorithm. I maintain a candidate and a count. Whenever I see the same element, I increment the count, otherwise I decrement it. If count becomes zero, I pick a new candidate. The majority element survives all cancellations
+
 class Solution {
     public int majorityElement(int[] nums) {
-        int count=1;
-        int candidate=0;
-        for(int i=0;i<nums.length;i++){
-            candidate =nums[i];
-            if(nums[i]==candidate){
+
+        int count = 0;
+        int candidate = 0;
+
+        for(int num : nums){
+
+            if(count == 0){
+                candidate = num;
+            }
+
+            if(num == candidate){
                 count++;
-            }else{
+            } else {
                 count--;
             }
         }
+
         return candidate;
     }
 }
 
 
 
+//Missing number
+/**
+ * That binary number is:1111 (base 2)
+ * And its decimal value is: 8 + 4 + 2 + 1 = 15
+ * 1111₂ = 15₁₀
+ * 
+ * why is -> 1 ^ 2 = 3 ?
+ * First convert to binary:
+ * 1 = 01
+*  2 = 10
 
-//Find the missing Element
+Now XOR bit by bit:
+  01
+^ 10
+----
+  11
+  We XOR all indices and all array values together; since every number appears twice except the missing one, all pairs cancel out and the remaining value is the missing number.
+  whatever value xor has at the end of the loop is the missing number —
+because all other numbers cancel out using XOR.
+ */
+
+//we are doing this because the array is from 0-n so we can use 0-n indices to cancel the duplicates with the array, we are using XOR to cancel the duplicates by xoring all indices with the array elements(0 ^ 1 ^ 2 ^ 3) ^ (3 ^ 0 ^ 1)
+class Main {
+    public static void main(String[] args) {
+        int[] nums = {3, 0, 1};
+        System.out.println(missingNumber(nums)); // 2
+    }
+
+    public static int missingNumber(int[] nums) {
+		/**
+		 * Loop runs from 0 → n-1
+		 * But expected range is 0 → n
+		 * so we manually include n
+		 */
+        //"Since the array contains numbers from 0 to n, but the loop only covers indices 0 to n-1, we initialize xor with n to include it. This ensures we XOR all numbers from 0 to n."
+        int xor = nums.length;
+
+        for (int i = 0; i < nums.length; i++) {
+			//combine (0 ^ 1 ^ 2 ^ 3) ^ (0 ^ 1 ^ 3)
+            xor ^= i;
+            xor ^= nums[i];
+        }
+
+        return xor;
+    }
+}
+
+
+
+//Find the missing Elements
 /**
  * First find the minimum and maximum values in the array. Then store all elements in a HashSet for O(1) lookup. After that iterate from min to max and check which numbers are missing. Those numbers are added to the result list.
  */
@@ -817,23 +898,30 @@ class Solution {
 
 
 //To find the peak element in the array
-//"I compare nums[mid] with nums[mid+1] to determine the slope. If it's increasing, I move right; otherwise, I move left. This guarantees finding a peak in O(log n)."
+//"I compare nums[mid] with nums[mid+1] and nums[mid] with nums[mid-1] to determine the slope. If it's increasing, I move right; otherwise, I move left. This guarantees finding a peak in O(log n)."
 //We don’t search peak directly, We follow slope → peak automatically reached
 //because all elements before low are smaller and all after are greater so we return low.
 //TC - O(log n) and SC - O(1)
 class Solution {
     public int findPeakElement(int[] nums) {
+        int n=nums.length;
         int low=0;
-        int high =nums.length-1;
-        while(low<high){
+        int high=n-1;
+        while(low<=high){
             int mid=low+(high-low)/2;
-            if(nums[mid]<nums[mid+1]){
+            //check if the current element is a peak
+            if(nums[mid]>nums[mid+1] && nums[mid]>nums[mid-1]){
+                return mid;
+            }
+            //if the current element is less than the next element, then the peak is in the right half
+            else if(nums[mid]<nums[mid+1]){
                 low=mid+1;
             }else{
-                high=mid;
+                //if the current element is greater than the next element, then the peak is in the left half
+                high=mid-1;
             }
         }
-        return low;
+        return -1;
     }
 }
 
