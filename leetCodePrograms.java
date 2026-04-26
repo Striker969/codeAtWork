@@ -8,6 +8,7 @@ class Solution {
             int comp=target-nums[i];
             if(x.containsKey(comp)){
                 //It returns the indices of the two numbers whose sum equals the target, where the indices are stored in the form of array and later return it.
+                //this is called declaration and initialization
                 int [] ret ={x.get(comp), i};
                 return ret;
             }
@@ -257,6 +258,17 @@ class Main {
 //output -> [2,3,4]
 //TC - O(n) and SC - O(n)
 //list will follow the order of insertion, which will help return the sorted way
+//why not use set for result/lst -> Because the problem requires a sorted output. A HashSet does not maintain order, while a List allows us to maintain the sorted sequence easily.
+/**
+ * A Set is mainly used when we need:
+Uniqueness
+Fast lookup
+
+But here:
+
+The missing numbers will already be unique
+We don't need lookup on the result
+ */
 class Solution {
     public List<Integer> findMissingElements(int[] nums) {
         List<Integer> lst =new ArrayList<>();
@@ -299,7 +311,7 @@ class Solution {
  *    --> in this cycle fast will eventually catch slow, just like two runners on the cycle track which means a cycle exits and both pointers are somewhere inside the cycle.
  * 
  * *) Phase 2 is to find the cycle entrance why?
- *    --> purpose is to Find the start of the cycle, which corresponds to the duplicate number. when we find both the value that are same tha means ✔ We reached the cycle entrance ✔ That value is the duplicate
+ *    --> purpose is to Find the start of the cycle, which corresponds to the duplicate number. when we find both the value that are same that means ✔ We reached the cycle entrance ✔ That value is the duplicate
  * 
  * TC - O(n) and SC - O(1)
  */
@@ -321,8 +333,9 @@ class Solution {
             //fast will eventually catch slow
             b=nums[nums[b]];
         }
-        a=0;
+        //a=0; because we need to start from the beginning of the array and b is the meeting point of an array
         //phase 2
+        //as soon as they meet, move both pointers one step at a time until they meet again at the start of the cycle
         while(a!=b){
             a=nums[a];
             b=nums[b];
@@ -336,8 +349,18 @@ class Solution {
 
 //Intersection of two arrays
 //TC - O(n+m) and SC - O(n)
+/**
+ * I use a HashSet to store elements of the first array for O(1) lookup.
+Then I iterate through the second array and check if the element exists in the set.
+If it does, I add it to a result set to ensure uniqueness.
+Finally, I convert the result set into an array.
+ */
 class Solution {
+    //as the return type is int, you need to return int and not hashset
     public int[] intersection(int[] nums1, int[] nums2) {
+        //Input: nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+        //Output: [9,4]
+        //Explanation: [4,9] is also accepted.
         HashSet<Integer> x=new HashSet<>();
         HashSet <Integer> result=new HashSet<>();
         for(int n: nums1){
@@ -379,11 +402,15 @@ class Solution {
             if(x.containsKey(sum-k)){
                 count+=x.get(sum-k);
             }
+            //If key exists → return its value
+            //If NOT → return defaultValue
+            //If key missing → assume 0 → then increment
             x.put(sum,x.getOrDefault(sum,0)+1);
         }
         return count;
     }
 }
+
 
 
 //To count the frequency of the elements(Integer)
@@ -439,7 +466,21 @@ class Main {
 
 //to find all the duplicates in the array
 //TC=O(n) and SC=O(1)
+//Input: nums = [4,3,2,7,8,2,3,1]
+//Output: [2,3]
 
+//👉 Use index as a marker
+// Value → tells index
+// Index → used to track visited
+
+/**
+ * 🧠 Why it works?
+
+👉 First time:
+Make element negative → mark visited
+👉 Second time:
+Already negative → duplicate found
+ */
 class Solution {
     public List<Integer> findDuplicates(int[] nums) {
         List<Integer> x=new ArrayList<>();
@@ -447,6 +488,10 @@ class Solution {
             //Math.abs is used because the digits will become negative
             int val=Math.abs(nums[i]);
             //converts value into valid index because if the higest value in the array is 8 then i need a index of 7 so val-1 is done
+            //If nums[val - 1] is negative → already visited → duplicate
+            //Else → mark visited (make negative)
+            //we want to use values as index
+            //eg:- [1,2,3] -> n but index is n-1
             int index=val-1;
             if(nums[index]<0){
                 x.add(val);
@@ -626,19 +671,63 @@ count[n] = -1
 //m = length of shortest string
 //SC=O(1)
 //No extra space used.
+/**
+ * 🔍 What does this mean?
+"flight".indexOf("fl")
+
+👉 It checks:
+
+“At what index does the substring "fl" appear inside "flight"?”
+
+✅ Result
+"flight".indexOf("fl") = 0
+
+👉 Because "fl" starts at index 0
+ */
 class Solution {
     public String longestCommonPrefix(String[] strs) {
         String prefix =strs[0];
         for(int i=1;i<strs.length;i++){
             while(strs[i].indexOf(prefix)!=0){
                 prefix=prefix.substring(0,prefix.length()-1);
+                if (prefix.isEmpty()) return "";
             }
         }
         return prefix;
     }
 }
 
+/**
+ * Mutable and immutable?
+ * ✅ String → Immutable
+String s = "hello";
+s = s + " world";
 
+👉 What happens internally:
+
+"hello" → created
+"hello world" → new object created
+s now points to new object
+
+
+StringBuilder → Mutable
+StringBuilder sb = new StringBuilder("hello");
+sb.append(" world");
+
+👉 Same object is modified
+
+🔍 Example
+StringBuilder sb = new StringBuilder("abc");
+sb.append("def");
+System.out.println(sb);
+
+👉 Output:
+
+abcdef
+
+"String is immutable, meaning once created it cannot be changed, and any modification results in a new object. StringBuilder is mutable, so it allows modification of the same object, making it more efficient for frequent string operations."
+
+ */
 //Reverse words in a string
 //trim() removes leading + trailing spaces
 // \\s+ -> one or more spaces in between the strings
@@ -704,7 +793,7 @@ class Solution {
             // write count if > 1
             if (count > 1) {
                 //String.valueOf() -> will convert int to string
-                //tocharArray() is used separate the string to an array. assume "ab"->["a", "b"]
+                //tocharArray() is used to separate the string to an array. assume "ab"->["a", "b"]
                 String c = String.valueOf(count);
                 for (char ch : c.toCharArray()) {
                     //write the count next to the chracter
@@ -714,6 +803,67 @@ class Solution {
         }
         //k is just a number that was incremented till 6, but leetcode takes only those first k(6) elements so the output will be ["a","2","b","2","c","3"]
         return k;
+    }
+}
+
+//String Compression
+//because in leetcode you will return only k which is total chars, eg:- a2b2c3 for which the k is 6, suppose if you have to do the problem outside of the leetcode you need to use the below approach where you will be using,
+//        String result = new String(chars, 0, k);
+        //System.out.println(result);
+class Solution {
+
+    public int compress(char[] chars) {
+        int i = 0;
+        int k = 0;
+
+        while (i < chars.length) {
+            char current = chars[i];
+            int count = 0;
+
+            // count occurrences
+            while (i < chars.length && chars[i] == current) {
+                i++;
+                count++;
+            }
+
+            // write character
+            chars[k++] = current;
+
+            // write count if > 1
+            if (count > 1) {
+                String c = String.valueOf(count);
+                for (char ch : c.toCharArray()) {
+                    chars[k++] = ch;
+                }
+            }
+        }
+
+        return k;
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+
+        char[] chars = {'a','a','b','b','c','c','c'};
+
+        int k = sol.compress(chars);
+
+        // Option 1: print as string
+/**
+ * chars → source array
+0 → start index
+k → number of characters to take
+ */
+        String result = new String(chars, 0, k);
+        System.out.println(result);
+
+        // Option 2: print like LeetCode format
+        System.out.print("[");
+        for (int i = 0; i < k; i++) {
+            System.out.print("\"" + chars[i] + "\"");
+            if (i < k - 1) System.out.print(",");
+        }
+        System.out.println("]");
     }
 }
 
@@ -756,18 +906,41 @@ class Solution {
                 x.put(vv,new ArrayList<>());
             }
             x.get(vv).add(str);
+            /**
+             * 👉 Step:
+
+Get list for that key
+Add current word
+
+example:-
+key = "aet"
+
+map.get("aet") → ["eat","tea"]
+add "ate"
+
+→ ["eat","tea","ate"]
+             */
         }
-        //why x.values()?
-        //because it returns Collection<List<String>> -> 
         /**
-         * [
-  ["eat","tea","ate"],
-  ["tan","nat"],
-  ["bat"]
-]
-        so we use new ArrayList<>(...); which will convert collection to list
+         * after processing the map looks like this:-
+         * Map → key + value (grouping with identity)
+         * {
+          "aet" → ["eat","tea","ate"]
+          "ant" → ["tan","nat"]
+          "abt" → ["bat"]
+            }
+
+            but we want only values, the below one is Collection<List<String>>
+            a.values() will return Collection<List<String>> even though it looks like list, but it is a collection which can be set, list etc so we use new ArrayList<> which will return List<List<String>> and will match the return type
+
+            [
+             ["eat","tea","ate"],
+             ["tan","nat"],
+             ["bat"]
+           ]
          */
-        
+        //It converts Collection → List
+        //map.values() returns a collection of all grouped anagrams. Since the return type requires a List, I convert it into an ArrayList.
         return new ArrayList<>(x.values());
     }
 }
@@ -775,9 +948,11 @@ class Solution {
 
 
 //Longest substring without repeating characters
+//"We can also use an array of size 128 instead of HashMap for ASCII → improves performance slightly"
 //TC-O(n) abd SC-O(min(n, charset))
 //input - abcabcbb
 //output - 3
+//If duplicate found → move left forward
 class Solution {
     public int lengthOfLongestSubstring(String s) {
         HashMap<Character, Integer> map =new HashMap<>();
@@ -791,6 +966,7 @@ class Solution {
             }
             map.put(t,right);
             //(right-left)+1 is used to calculate the length of the current substring (window)
+            //assume if the input is abcabcda, then the output should be 4, at the index 6 the maxlength will be maxlength=Math.max(3, (6-3)+1)=4 because d is not there in the hashmap which will make the left to not move forward.
             maxlength=Math.max(maxlength,(right-left)+1);
         }
         return maxlength;
@@ -1019,15 +1195,38 @@ class Solution {
 //Container with most water
 // TC=O(n) and SC=O(1)
 //area should be calculated which is length * height
+//formula -> Area = width * min(height[left], height[right])
+/**
+ * left = 0 (1)
+right = 8 (7)
+
+width =right-left
+width = 8
+height = min(1,7) = 1
+area = 8 * 1 = 8
+We don’t just pick the tallest lines. The area depends on both width and the smaller height. So we start with maximum width and try to improve the smaller height by moving pointers inward.
+Always move the smaller height pointer(basically get rid of it)
+//Because smaller height limits the area, more the smaller height the lesser will be the area
+
+Max area depends on:
+→ large width
+→ reasonably large minimum height
+
+ */
+//Input: height = [1,8,6,2,5,4,8,3,7]
+//Output: 49
+
 class Solution {
     public int maxArea(int[] height) {
         int max=0;
         int left =0;
         int right =height.length-1;
         while(left<right){
+            //We take the minimum because the shorter wall determines how much water can be held. If we take the taller one, water would overflow from the shorter side.
             int h=Math.min(height[left],height[right]);
             int length=right-left;
             int area=h*length;
+            //Max area comes from best balance of width and smaller height
             max=Math.max(max,area);
             if(height[left]<height[right]){
                 left++;
@@ -1193,5 +1392,374 @@ class Solution {
         }
 
         return mincost[n];
+    }
+}
+
+
+
+/****************************************************Prefix Sum****************************************************/
+//Subarray sum
+/**
+ * Example 1:
+
+Input: nums = [23,2,4,6,7], k = 6
+Output: true
+Explanation: [2, 4] is a continuous subarray of size 2 whose elements sum up to 6.
+Example 2:
+
+Input: nums = [23,2,6,4,7], k = 6
+Output: true
+Explanation: [23, 2, 6, 4, 7] is an continuous subarray of size 5 whose elements sum up to 42.
+42 is a multiple of 6 because 42 = 7 * 6 and 7 is an integer.
+ */
+//TC=O(n)
+//SC=O(min(n,k))
+/**
+ * 🧠 Where does O(min(n, k)) come from?
+
+We store:
+
+HashMap<remainder, index>
+
+👉 Remainder values range:
+
+0 → k-1
+🔍 Two scenarios
+✅ Case 1: k < n
+Max possible remainders = k
+Map size ≤ k
+
+👉 Space:
+
+O(k)
+✅ Case 2: n < k
+We only iterate n times
+So at most n entries
+
+👉 Space:
+
+O(n)
+🎯 Final Space Complexity
+O(min(n, k))
+ */
+class Solution {
+    public boolean checkSubarraySum(int[] nums, int k) {
+        HashMap<Integer, Integer> x=new HashMap<>();
+        //this means Remainder 0 was seen at index -1, this will be useful if the suabarray starts from index 0
+        x.put(0,-1);
+        int sum=0;
+        for(int i=0;i<nums.length;i++){
+            sum+=nums[i];
+            //we take remainder because two nos with same remainder -> this difference is divisible by k
+            int rem=sum%k;
+            if(x.containsKey(rem)){
+                //Subarray must have at least 2 elements
+                if(i-x.get(rem)>=2){
+                    return true;
+                }
+            }else{
+                x.put(rem, i);
+            }
+        }
+        return false;
+    }
+}
+
+
+/**************************************************Stack/queue***************************************************/
+//Valid parenthesis
+//with the approach Last in first out
+//input "(){}[]" output -> true;
+//output "([)]" output -> false;
+//TC and SC = O(n);
+class Solution {
+    public boolean isValid(String s) {
+        Stack<Character> x=new Stack<>();
+        for(int i=0;i<s.length();i++){
+            char c=s.charAt(i);
+            // all the below if and 2 else if works in such a way that, it will check for the first opening bracket and it will push the corresponding valid closing bracket
+            if(c=='(') x.push(')');
+            else if(c=='{') x.push('}');
+            else if(c=='[') x.push(']');
+            else{
+                //this x.isEmpty() works only when the first firs character is like this -> ")(", as the first char is invalid as it will not make the valid parenthesis and the stack will be empty
+                //and x.pop() will check for the last element added and it will compare with the current element, if both are equal then it is a valid parenthesis, if it is not equal then it is not a valid parenthesis and will return false, eg: input="([)]", at first two iteration first two element(closing brackets) will be pushed to stack and for the 3rd iteration it will come to else block -> if block, now x.pop()=']' will compare with ')' which are not equal so it is invalid parenthesis
+                if(x.isEmpty() || x.pop()!=c){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+
+
+
+//Min Stack
+/**
+ * Input
+["MinStack","push","push","push","getMin","pop","top","getMin"]
+[[],[-2],[0],[-3],[],[],[],[]]
+
+Output
+[null,null,null,null,-3,null,0,-2]
+
+Implement the MinStack class:
+
+MinStack() initializes the stack object.
+void push(int val) pushes the element val onto the stack.
+void pop() removes the element on the top of the stack.
+int top() gets the top element of the stack.
+int getMin() retrieves the minimum element in the stack.
+
+
+Explanation
+
+MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin(); // return -3
+minStack.pop();
+minStack.top();    // return 0
+minStack.getMin(); // return -2
+ */
+//TC-O(1) and SC-O(n)
+class MinStack {
+    Stack<Integer> stack;
+    Stack<Integer> minstack;
+    public MinStack() {
+        stack=new Stack<>();
+        minstack=new Stack<>();
+    }
+    
+    public void push(int val) {
+        stack.push(val);
+        if(minstack.isEmpty() || val<=minstack.peek()){
+            minstack.push(val);
+        }
+    }
+    
+    public void pop() {
+        int value=stack.pop();
+        if(value==minstack.peek()){
+            minstack.pop();
+        }
+    }
+    
+    public int top() {
+        return stack.peek();
+    }
+    
+    public int getMin() {
+        return minstack.peek();
+    }
+}
+
+
+//Next greater elements(Monotonic Stack + HashMap)
+//it is called Monotonic because we store elements in specific order in stack
+//"Yes, a decreasing stack means elements are arranged in decreasing order from bottom to top, so the top is always the smallest among current elements."
+//if nums1 didn't exist, then the problem would be Return next greater for ALL elements in nums2
+/**
+ * example
+ * nums1 = [4,1,2]
+   nums2 = [1,3,4,2]
+   Step 1: Process nums2
+
+We build:
+
+map:
+1 → 3
+3 → 4
+4 → -1
+2 → -1
+
+Step 2: Use nums1
+
+Now we answer only:
+
+4 → -1
+1 → 3
+2 → -1
+
+👉 Output:
+
+[-1, 3, -1]
+ */
+
+class Solution {
+    public int[] nextGreaterElement(int[] nums1, int[] nums2) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        Stack<Integer> stack = new Stack<>();
+
+        // Process nums2
+        for (int num : nums2) {
+            while (!stack.isEmpty() && num > stack.peek()) {
+                map.put(stack.pop(), num);
+            }
+            stack.push(num);
+        }
+
+        // Remaining elements → no greater
+        while (!stack.isEmpty()) {
+            map.put(stack.pop(), -1);
+        }
+
+        // Build result
+        int[] result = new int[nums1.length];
+        for (int i = 0; i < nums1.length; i++) {
+            result[i] = map.get(nums1[i]);
+        }
+
+        return result;
+    }
+}
+
+
+
+//Daily Temperatures
+//to find the number of days after which we get a higher temperature
+//Input: temperatures = [73,74,75,71,69,72,76,73]
+//Output: [1,1,4,2,1,1,0,0]
+
+class Solution {
+    public int[] dailyTemperatures(int[] tem) {
+        int n[]=new int[tem.length];
+        Stack <Integer> x=new Stack<>();
+        //at 0th iteration index 0 will be pushed
+        for(int i=0;i<tem.length;i++){
+            while(!x.isEmpty() && tem[i]>tem[x.peek()]){
+                int pindex=x.pop();
+                n[pindex]=i-pindex;
+            }
+            x.push(i);
+        }
+        return n;
+    }
+}
+
+
+/****************************************************Linked List*********************************************** */
+
+
+//Reverse Linked List
+//ListNode represents a node in a singly linked list. Unlike arrays, linked lists do not support indexing, so we reverse the list by changing the next pointers instead of swapping elements.
+//Input: head = [1,2,3,4,5]
+//Output: [5,4,3,2,1]
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        if(head==null){
+            return null;
+        }
+        //head.next points to next element
+        if(head.next==null){
+            return head;
+        }
+        ListNode prev=null;
+        ListNode current=head;
+        //this while loop breaks only when current element == null
+        //
+        while(current!=null){
+            ListNode nextele=current.next;
+            current.next=prev;
+            prev=current;
+            current=nextele;
+        }
+        //in the last iteration after breaking the while loop, the prev will be head, because in the last iteration before breaking the while loop the current will point to the null so the prev will be the head which is 5
+        head=prev;
+        return head;
+    }
+}
+
+
+
+//Linked list cycle
+//to check whether the linked list has a loop
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+        ListNode slow=head;
+        ListNode fast=head;
+        if(head==null) return false;
+        //reason we use fast.next!=null is because, if the pointer is at the end and from there if it does fast=fast.nex.next; it is actually null even after two places from the end
+        while(slow!=null && fast!=null && fast.next!=null){
+            slow=slow.next;
+            fast=fast.next.next;
+            if(slow==fast){
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+//NOTE:- this program makes -> Store values in nodes and Create links between nodes
+//merge two sorted lists
+//In linked lists, only the head node is passed, which gives access to the entire list. The dummy node is used as a starting point to simplify list construction.
+//Input: list1 = [1,2,4], list2 = [1,3,4]
+//Output: [1,1,2,3,4,4]
+//TC-O(m+n) and SC-O(1). TC is O(m+n) because traversing both list1 and list2
+//here we all the each element as node, node1(val=1)
+//I use two pointers to traverse both lists and attach the smaller node to the result list. A dummy node helps simplify handling of the head.
+//in list1 and list2, val is not passed/taken.
+//what does first node contains -> [ val = 1 | next → Node(2) ]
+class Solution {
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        //what is inside dummy? -> dummy → [-1 | next = null]. "-1" is just a place holder. this is because we dont know where the head starts
+        //The dummy node is a helper node placed before the actual list. By returning dummy.next, we skip the dummy node and return the real head of the merged list.
+        ListNode dummy =new ListNode(-1);
+        ListNode curr=dummy;
+        while(list1!=null && list2!=null){
+            if(list1.val<=list2.val){
+                //curr.next = ... attaches a node
+                curr.next=list1;
+                list1=list1.next;
+            }else{
+                curr.next=list2;
+                list2=list2.next;
+            }
+            //It moves your pointer forward by one node
+            curr=curr.next;
+        }
+        if(list1!=null){
+            curr.next=list1;
+        }else{
+            curr.next=list2;
+        }
+        //this return statement will ignore/skip the dummy value "-1" and returns 1 → 1 → 2 → 3 → 4 → 4
+        return dummy.next;
+    }
+}
+//when i say first node it is actually this -> [ val = 1 | next → Node(2) ]
+//NOTE:- next points to whatever is the next element in the list
+//eg:- [5,8,9,2] for this linked list [ val = 5 | next → Node(8) ]
+
+
+
+//Remove nth node from end of the list
+//Input: head = [1,2,3,4,5], n = 2
+//Output: [1,2,3,5]
+//TC-O(n) and SC-O(1)
+//when they say this -> Follow up: Could you do this in one pass? --> this means traversing the list only one time if you traverse two times it will be O(n2), if you traverse once to check the length of the list and traverse again to remove the nth from the end, which is two times traversing that will be O(n2)
+//I used a two-pointer approach where the second pointer is moved n steps ahead. Then both pointers(first and second) move together so that second reaches the node just before the target. This allows removal in one pass with O(1) space.
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy=new ListNode(-1);
+        //you do this because you need to link the dummy node to the head of the node
+        dummy.next=head;
+        ListNode first=dummy;
+        ListNode second=dummy;
+        //move second pointer to n space ahead
+        for(int i=0;i<n;i++){
+            second=second.next;
+        }
+        //move both now, until the next of second pointer is null 
+        while(second.next!=null){
+            first=first.next;
+            second=second.next;
+        }
+        //now we have to remove the node next of first pointer
+        first.next=first.next.next;
+        return dummy.next;
     }
 }

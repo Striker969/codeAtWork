@@ -3190,6 +3190,13 @@ Intersection = students present in BOTH classes
 means, if the same elements are present in both the array then it is an intersection
 
  */
+/**
+ * I use a HashSet to store elements of the first array for O(1) lookup.
+Then I iterate through the second array and check if the element exists in the set.
+If it does, I add it to a result set to ensure uniqueness.
+Finally, I convert the result set into an array.
+ */
+
 public class IntersectionTwoArrays {
 
     public static List<Integer> intersect(int[] a, int[] b) {
