@@ -1,6 +1,7 @@
 /********************************************Array programs and hashing**********************************************/
 //Two sum problem for the unsorted array
 //SC and TC = O(n)
+//NOTE:- try this problem using two pointers approach
 class Solution {
     public int[] twoSum(int[] nums, int target) {
         HashMap<Integer, Integer> x =new HashMap<>();
@@ -17,6 +18,21 @@ class Solution {
         //Default return if no pair found (compiler requirement), which returns an empty array
         //Java requires that a method must return something for every possible execution path. So this line is a fallback return if no pair is found.
         return new int []{};
+    }
+}
+
+//Two sum (brute force approach)
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        for(int i=0;i<nums.length;i++){
+            for(int j=i+1;j<nums.length;j++){
+                if(nums[i]+nums[j]==target){
+                    int n[]={i, j};
+                    return n;
+                }
+            }
+        }
+        return new int[]{};
     }
 }
 
@@ -63,7 +79,7 @@ class Solution {
 // TC=O(n) and SC =O(1)
 
 // for every index i
-//answer[i] = product of elements before i  *  product of elements after i
+//answer[i] = product of elements before i  *  product of elements after i 
 
 /**For each index we need the product of elements before and after it.
 I first compute prefix products and store them in the result array.
@@ -81,6 +97,7 @@ class Solution {
         n[0]=1;
         //build prefix product
         //answer[i] = product of elements before i
+        // the array you get for the below code is [1,1,2,6]
         for(int i=1;i<nums.length;i++){
             n[i]=n[i-1]*nums[i-1];
         }
@@ -101,6 +118,31 @@ class Solution {
     }
 }
 
+
+//OR
+//Product of array except self - simple approach
+//tc = o(n) and sc = o(n)
+//input -> [1,2,3,4]
+//output -> [24,12,8,6]
+class Solution {
+    public int[] productExceptSelf(int[] nums) {
+        int left[]=new int[nums.length];
+        int right[]=new int[nums.length];
+        left[0]=1;
+        for(int i=1;i<nums.length;i++){
+            left[i]=left[i-1]*nums[i-1];
+        }
+        right[nums.length-1]=1;
+        for(int i=nums.length-2;i>=0;i--){
+            right[i]=right[i+1]*nums[i+1];
+        }
+        int ans[]=new int[nums.length];
+        for(int i=0;i<nums.length;i++){
+            ans[i]=left[i]*right[i];
+        }
+        return ans;
+    }
+}
 
 
 
@@ -240,9 +282,12 @@ class Main {
 
         for (int i = 0; i < nums.length; i++) {
 			//combine (0 ^ 1 ^ 2 ^ 3) ^ (0 ^ 1 ^ 3)
+            //xor of 1 and 1 is 0
             xor ^= i;
             xor ^= nums[i];
-        }
+            //or
+            //-> xor=xor^i^nums[i];
+          }
 
         return xor;
     }
@@ -390,6 +435,7 @@ class Solution {
  * currentsum-previoussum=k -> eg:- currentsum is 3(for 2nd iteration) - previoussum is 0 which is equal to 3 which is target. but in program we are doing this previoussum=currentSum - k which is 0=3-3
  * But internally we also assume a prefix before the array starts: so prefixSum = 0 which makes [0, 1, 3, 6]
  * O(n)
+ * for the input [1,2,3] and for the target 3, the output is 2, because there are 2 subarrays that sum to 3: [1,2] and [3]
  */ 
 class Solution {
     public int subarraySum(int[] nums, int k) {
@@ -431,7 +477,7 @@ class Main {
 
 //To count the frequency of the elements(String)
 //input - aabbc
-//input = {a=2, b=2, c=1}
+//output = {a=2, b=2, c=1}
 //O(n)
 class Main {
     public static void main(String[] args) {
@@ -450,12 +496,15 @@ class Main {
 class Main {
     public static void main(String[] args) {
         String a="aabbc";
+        //this is the array that will store the frequency of the characters
         int b[]=new int[26];
         for(int i=0;i<a.length();i++){
             b[a.charAt(i)-'a']++;
         }
         for(int i=0;i<b.length;i++){
             if(b[i]>0){
+                //This line is converting an array index back into its corresponding character. 
+                //ASCII value of a is 97 and b is 98, so we use the particular index where the frequency is greater than 0 and with 'a', eg:- 1+'a' --> 98, which after explicit conversion it will be 'b' 
                 char ch=(char)(i+'a');
                 System.out.print(ch+" "+b[i]+" ");
             }
@@ -539,7 +588,60 @@ class Solution {
             left++;
             right--;
         }
-        System.out.print(nums.toString());
+        System.out.print(Arrays.toString(nums));
+    }
+}
+
+
+
+//Minimum swaps
+//TC=O(n) and SC=O(1)
+//input = [4,3,1,2]
+//output = 3; because we need to swap 3 times to get the array [1,2,3,4]
+//
+    static int minimumSwaps(int[] arr) {
+            int swap=0;
+        for(int i=0;i<arr.length;i++){
+            //arr[i]!=i+1 means the number is not in the correct position, for example if arr[i] is 4 then it should be in the index 3, so i+1 should be 4
+            while(arr[i]!=i+1){
+                //correct is the correct position of the number
+                //for example if arr[i] is 4 then correct should be 3
+                int correct=arr[i]-1;
+                //temp is used to swap the numbers
+                int temp=arr[i];
+                arr[i]=arr[correct];
+                arr[correct]=temp;
+                swap++;
+            }
+        }
+        return swap;
+    }
+
+
+
+//Rotate array right by k using method with parameter
+
+import java.util.*;
+
+class Solution {
+    public void rotate(int[] nums, int k) {
+
+        int n = nums.length;
+        k = k % n;
+
+        reverse(nums, 0, n - 1);       // Step 1
+        reverse(nums, 0, k - 1);       // Step 2
+        reverse(nums, k, n - 1);       // Step 3
+    }
+
+    private void reverse(int[] nums, int left, int right) {
+        while (left < right) {
+            int temp = nums[left];
+            nums[left] = nums[right];
+            nums[right] = temp;
+            left++;
+            right--;
+        }
     }
 }
 
@@ -600,6 +702,66 @@ class Solution {
         return xor ^ n;
     }
 }
+
+
+
+//Longest Consecutive Sequence
+//TC=O(n) and SC=O(1)
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        HashSet<Integer> set=new HashSet<>();
+        for(int n: nums){
+            set.add(n);
+        }
+        int maxlength=0;
+        for(int current: set){
+            //this if block will make sure that there are no lesser element than the element x present in an array, assume the least value is 1 in an array, this if block works from this 1 value, because 0 is not ther in an array, this will help check forward the values comes after 1
+            if(!set.contains(current-1)){
+            int length=1;
+            //this while loop runs until there are consecutive numbers in an array
+                while(set.contains(current+1)){
+                    current++;
+                    length++;
+                }
+                maxlength=Math.max(maxlength, length);
+            }
+        }
+            return maxlength;
+    }
+}
+
+
+
+//First missing positive integer
+class Solution {
+    public int firstMissingPositive(int[] nums) {
+        //we are making all the numbers that are less than or equal to 0 or greater than the length of the array to the length of the array+1
+        for(int i=0;i<nums.length;i++){
+            if(nums[i]<=0 || nums[i]>nums.length){
+                nums[i]=nums.length+1;
+            }
+        }
+        //this for loop is used to mark the presence of the number in the array, we will mark the number by making the number at the index of the number negative
+        for(int i=0;i<nums.length;i++){
+            int num=Math.abs(nums[i]);
+            //if the number is greater than the length of the array then we are skipping the iteration, continue means skip the iteration and move to the next iteration
+            if (num>nums.length) continue;
+            if(nums[num-1]>0){
+                nums[num-1]=-nums[num-1];
+            }
+        }
+        //this for loop is used to find the first missing positive integer, we will return the index+1 if the number is positive
+        for(int i=0;i<nums.length;i++){
+            if(nums[i]>0){
+                return i+1;
+            }
+        }
+        //we are returning the length+1 because if the array is [1,2,3] then the first missing positive integer is 4 which is not present in the array so we are returning the length+1
+        return nums.length+1;
+    }
+}
+
+
 
 
 /************************************************String programs***************************************************/
@@ -945,11 +1107,57 @@ add "ate"
     }
 }
 
+//Rolling String
+//TC-O(m*n)(because there are two for loop) SC-O(n)(because you are doing tochararray and storing in c)
+class Main {
+    public static void main(String[] args) {
+        String a="bca";
+        //output is "eeb"
+       int arr[]={1,2,3};
+       System.out.print(roll(a, arr));
+    }
+    public static String roll(String a, int []k){
+        char c[]=a.toCharArray();
+        for(int i=0;i<c.length;i++){
+            int roll=k[i];
+            for(int j=0;j<roll;j++){
+                //this line is used to Incrementing the character by 1 (with wrap-around from 'z' → 'a')
+                //c[j]-'a' is used to Converts char → number
+                //c[j]-'a'+1 will move to next character
+                //%26 is used to wrap around after 'z'
+                //'a'+result will convert number to chracter(which will be in ASCII value, to convert to char (char) is used)
+                c[j]=(char)('a'+((c[j]-'a'+1)%26));
+                //actual use of %26 
+                //Wrapping around alphabets (a → z → a)
+                /**
+                 * Without % 26 (problem)
+                 * let say
+                 * 'z' → 25
+                 * 25 + 1 = 26
+                 * 'a' + 26 becomes -> 97 + 26 = 123 → '{' ❌ (wrong character)
+                 * therefore
+                 * with %26
+                 * (25 + 1) % 26 = 0
+                 * and 'a' + 0 = 'a' ✅
+                 * 
+                 * so %26 ensures, After 'z', we go back to 'a'
+                 */
+            }
+        }
+        String n=new String(c);
+        return n;
+    }
+}
+
+
+
+/***************************************************Sliding window***************************************************/
+
 
 
 //Longest substring without repeating characters
 //"We can also use an array of size 128 instead of HashMap for ASCII → improves performance slightly"
-//TC-O(n) abd SC-O(min(n, charset))
+//TC-O(n) and SC-O(min(n, charset))
 //input - abcabcbb
 //output - 3
 //If duplicate found → move left forward
@@ -972,6 +1180,57 @@ class Solution {
         return maxlength;
     }
 }
+
+
+
+//Longest repeating character replacement
+//TC-O(n) and SC-O(1)
+//Input: s = "AABABBA", k = 1
+//Output: 4
+class Solution {
+    public int characterReplacement(String s, int k) {
+        int freq[]=new int[26];
+        int left =0;
+        int maxfreq=0;
+        int maxlength=0;
+
+        for(int right=0;right<s.length();right++){
+            freq[s.charAt(right)-'A']++;
+            maxfreq=Math.max(maxfreq, freq[s.charAt(right)-'A']);
+            int maxwindow=right-left+1;
+            if(maxwindow-maxfreq>k){
+                freq[s.charAt(left)-'A']--;
+                left++;
+            }
+            maxwindow=right-left+1;
+            maxlength=Math.max(maxlength, maxwindow);
+        }
+        return maxlength;
+    }
+}
+
+
+
+//Maximum average subarray 1
+//TC-O(n) and SC(1)
+class Solution {
+    public double findMaxAverage(int[] nums, int k) {
+        int left=0;
+        int sum=0;
+        int maxavg=Integer.MIN_VALUE;
+        for(int right=0;right<nums.length;right++){
+            sum+=nums[right];
+            if(right-left+1==k){
+                maxavg=Math.max(maxavg,sum);
+                sum-=nums[left];
+                left++;
+            }
+        }
+        //double used for decimal result, eg:- 12.75, if used int you will get only 12
+        return (double)maxavg/k;
+    }
+}
+
 
 
 /*********************************************Binary search programs************************************************/
@@ -1128,6 +1387,59 @@ class Solution {
 }
 
 
+
+//Sorting colors
+//sort them in-place(means sorting happens in original array itself)
+/**
+ * Case 0:
+Swap with the element at start pointer
+start++
+middle++
+
+Case 1:
+No swapping
+middle++
+
+Case 2:
+Swap with the element at end pointer
+end--
+ */
+//when middle crosses the end pointer that is when you need to stop the while loop
+//in this program we use three pointers, start, middle, end
+//mid is the pointer that actually processes the array, not low. therefore we should not use low<=high
+//if arr[mid] is at 0, you just swap with start and do start++ and middle++,
+//if arr[mid] is at 1, you just increment middle++, let 1 be in the middle place and do not touch it,
+//if arr[mid] is at 2, you swap mid element with end and just do end--;
+class Solution {
+    public void sortColors(int[] nums) {
+        int start=0;
+        int middle=0;
+        int high=nums.length-1;
+        while(middle<=high){
+            if(nums[middle]==0){
+                swap(nums, middle, start);
+                middle++;
+                start++;
+            }else if(nums[middle]==1){
+                middle++;
+            }
+            else{ //nums[middle]==2
+                swap(nums, high, middle);
+                high--;
+            }
+        }
+    }
+    //private → accessible ONLY within the same class, not needed outside, which will expose unnecessarily
+    private void swap(int nums[], int i, int j){
+        int temp=nums[j];
+        nums[j]=nums[i];
+        nums[i]=temp;
+    }
+}
+
+
+
+
 //**************************************************Two pointers******************************************************
 //Two Sum 2(using two pointer technique as the array is sorted, to optimize the space that is why we are not using the hasmap here), 
 //if the number is lesser than target then move to the right
@@ -1239,7 +1551,44 @@ class Solution {
 }
 
 
-/*******************************************************OTHERS********************************************************/
+//3Sum
+//Input: nums = [-1,0,1,2,-1,-4]
+//Output: [[-1,-1,2],[-1,0,1]]
+//TC=O(n^2) and SC=O(n)
+//sort the array first and then use two pointers to find the triplets
+//we use a set to avoid duplicates
+//example -> suppose if i use List<List<Integer>> to store the triplets then i will get duplicates --> [[-1,-1,2],[-1,0,1],[-1,0,1]], here there are two duplicates of [-1,0,1], so to avoid this we use a set
+class Solution {
+    public List<List<Integer>> threeSum(int[] nums) {
+        if(nums==null || nums.length<2) return new ArrayList<>();
+        Arrays.sort(nums);
+        Set<List<Integer>> set =new HashSet<>();
+        for(int i=0;i<nums.length-2;i++){
+            int left=i+1;
+            int right=nums.length-1;
+            while(left<right){
+            int sum=nums[i]+nums[left]+nums[right];
+                if(sum==0){
+                    //asList is used to convert the array to a list
+                    set.add(Arrays.asList(nums[i],nums[left],nums[right]));
+                    left++;
+                    right--;
+                }
+                else if(sum<0){
+                    left++;
+                }else{
+                    right--;
+                }
+            }
+        }
+        //new ArrayList<>(set) is used to convert the set to a list
+        return new ArrayList<>(set);
+    }
+}
+
+
+
+/******************************************************OTHERS********************************************************/
 
 
 
@@ -1466,6 +1815,61 @@ class Solution {
 }
 
 
+
+//Maxumum product subarray
+//Input: nums = [2,3,-2,4]
+//Output: 6
+//Explanation: [2,3] has the largest product 6.
+//TC- O(n) and SC-O(1)
+/**
+ * the reason why i am multiplying prefix ans suffix is because, 1. if there is a 0 value and if i multiply from prefix, i will not get the suffix product which might be max product 2. if there is a odd negative values then suffix and prefix is useful
+ * this is one of the reasons i am using prefix and suffix
+ */
+class Solution {
+    public int maxProduct(int[] nums) {
+        int prefix=1;
+        int suffix=1;
+        //or you can make it as int ans=0;
+        int ans=nums[0];
+        for(int i=0;i<nums.length;i++){
+            if (prefix == 0) prefix = 1;
+            if (suffix == 0) suffix = 1;
+            prefix*=nums[i];
+            suffix*=nums[nums.length-1-i];
+            ans=Math.max(ans, Math.max(prefix, suffix));
+        }
+        return ans;
+    }
+}
+
+
+
+//Trapping rain water
+//TC and SC is O(n)
+//Input: height = [4,2,0,3,2,5]
+//Output: 9
+class Solution {
+    public int trap(int[] height) {
+        int n=height.length;
+        int leftmax[]=new int[n];
+        int rightmax[]=new int[n];
+        leftmax[0]=height[0];
+        for(int i=1;i<height.length;i++){
+            leftmax[i]=Math.max(leftmax[i-1], height[i]);
+        }
+        rightmax[n-1]=height[n-1];
+        for(int i=n-2;i>=0;i--){
+            rightmax[i]=Math.max(rightmax[i+1], height[i]);
+        }
+        int trapped=0;
+        for(int i=0;i<height.length;i++){
+            trapped+=Math.min(leftmax[i], rightmax[i])-height[i];
+        }
+        return trapped;
+    }
+}
+
+
 /**************************************************Stack/queue***************************************************/
 //Valid parenthesis
 //with the approach Last in first out
@@ -1492,6 +1896,45 @@ class Solution {
         return true;
     }
 }
+
+
+
+//Longest valid parenthesis
+//TC and SC - O(n)
+//Input: s = ")()())"
+//Output: 4
+class Solution {
+    public int longestValidParentheses(String s) {
+        Stack<Integer> x=new Stack<>();
+        //x.push(-1) acts as a base index for calculating lengths
+        /**
+         * It helps in two cases:
+        When valid substring starts from index 0
+        When we need a reference after an invalid ')'
+         */
+        //this will help when unmatching parenthesis starts from index 0, without using x.push(-1), if you try to pop() the closing bracket you will "empty stack exception error"
+        x.push(-1);
+        int total=0;
+        for(int i=0;i<s.length();i++){
+            char t=s.charAt(i);
+            if(t=='('){
+                x.push(i);
+            }else{
+                //if there is a valid substring the index will be pushed for opening bracket and will be popped out and the remaining previous index in the stack will be invalid closing or opening bracket
+                x.pop();
+                if(x.isEmpty()){
+                    x.push(i);
+                }else{
+                    //x.peek() = index of last unmatched position (either '('[if the string is "(()"] or invalid ')'[if the string is ")()"])
+                    //why i-x.peek() works? -> Length = current index - last invalid index
+                    total=Math.max(total, i-x.peek());
+                }
+            }
+        }
+        return total;
+    }
+}
+
 
 
 
@@ -1761,5 +2204,101 @@ class Solution {
         //now we have to remove the node next of first pointer
         first.next=first.next.next;
         return dummy.next;
+    }
+}
+
+
+
+/************************************************Priority Queue(Heap)************************************************/
+//Kth Largest Element in an Array
+/**
+ * Example 1:
+
+Input: nums = [3,2,1,5,6,4], k = 2
+Output: 5
+Example 2:
+
+Input: nums = [3,2,3,1,2,4,5,5,6], k = 4
+Output: 4
+ */
+/**
+ * explanation of TC and SC
+
+👉 We loop through all elements:
+
+n elements
+
+👉 For each element:
+
+add() → O(log k) (heap size is at most k)
+poll() → O(log k) (only when size > k)
+so total TC is n × log(k) which is "O(n log k)"
+Why log(k), not log(n)?
+because Heap size is NEVER more than k
+
+✅ 2️⃣ Space Complexity (SC)
+
+👉 Heap stores at most:
+
+k elements
+
+👉 So:
+
+O(k)
+ */
+class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        //this PQ will by default be min heap where it will store the minimum number in the top(root)
+        PriorityQueue<Integer> x=new PriorityQueue<>();
+        for(int n:nums){
+            x.add(n);
+            //we dont want the smallest elements as we want the kth largest, so if the size is greater than k, then will need to remove the smallest element
+            if(x.size()>k){
+                //poll() will remove the smallest element
+                x.poll();
+            }
+        }
+        //peek() will return the smallest element
+        return x.peek();
+    }
+}
+
+
+/****************************************************DFS/BFS******************************************************* */
+//When a recursive call is made, the current function is paused and stored in the call stack. Once the recursive call finishes, execution resumes from where it left off.
+
+//Maximum depth of binary tree
+//see the image in leetcode for better understanding
+//Input: root = [3,9,20,null,null,15,7]
+//Output: 3
+//TC and SC is O(n)
+//here we are doing the level order traversal and we are counting the number of levels(horizontally)
+class Solution {
+    public int maxDepth(TreeNode root) {
+        //we are using queue to store the nodes level by level
+        Queue<TreeNode> tree = new LinkedList<>();
+        tree.add(root);
+        int maxdepth=0;
+
+        //this while loop will run until the queue is empty
+        while(true){
+            //tree.size() will return the number of nodes in the current level
+            int level=tree.size();
+            if(level==0){
+                return maxdepth;
+            }
+            //this while loop will run until the current level is empty
+            while(level>0){
+                TreeNode getrecent=tree.poll();
+                //if the left child is not null, then we will add it to the queue
+                if(getrecent.left!=null) tree.add(getrecent.left);
+                //if the right child is not null, then we will add it to the queue
+                if(getrecent.right!=null) tree.add(getrecent.right);
+                //we are decrementing the level by 1 because we have processed one node
+                level--;
+            }
+            //we are incrementing the maxdepth by 1 because we have processed one level
+            maxdepth++;
+        }
     }
 }

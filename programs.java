@@ -3052,6 +3052,7 @@ class Main {
 
 
 //output -> eeb
+//TC-O(m*n) and SC-O(n)
 public class RollingString {
     public static void main(String[] args) {
         String s = "bca";
