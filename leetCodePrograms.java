@@ -768,7 +768,7 @@ class Solution {
 
 
 //Valid palindrome
-//s = s.replaceAll("[^A-Za-z0-9]", "").toLowerCase(); -> this will remove everyelemnt except Big char, small char and numbers and replace them or removes space and everything eg:- input -> "A man, a plan, a canal: Panama", output ->      amanaplanacanalpanama
+//s = s.replaceAll("[^A-Za-z0-9]", "").toLowerCase(); -> this will remove every elemnt except Big char, small char and numbers and replace them or removes space and everything eg:- input -> "A man, a plan, a canal: Panama", output ->      amanaplanacanalpanama
 //.toString() converts stringbuilder to string, return type has to be string
 /**
  * StringBuilder result = new StringBuilder();
@@ -905,7 +905,7 @@ class Solution {
                 x.append(" ");
             }
         }
-        return x.toString();
+        return x.toString(); // output: "blue is sky the"
     }
 }
 
