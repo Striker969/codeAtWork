@@ -367,25 +367,42 @@ class Solution {
 //output = 2
 class Solution {
     public int findDuplicate(int[] nums) {
-        int a=nums[0];
-        int b=nums[nums[0]];
+        int slow=nums[0];
+        int fast=nums[nums[0]];
         //phase 1
         //The slow and fast pointers will meet somewhere inside the cycle ,
-        while(a!=b){
+        // in this while loop fast will meet slow, this while loop will terminate when 4==4
+        while(slow!=fast){
             //slow → moves 1 step
-            a=nums[a];
+            slow=nums[slow];
             //fast → moves 2 steps
             //fast will eventually catch slow
-            b=nums[nums[b]];
+            fast=nums[nums[fast]];
         }
         //a=0; because we need to start from the beginning of the array and b is the meeting point of an array
         //phase 2
         //as soon as they meet, move both pointers one step at a time until they meet again at the start of the cycle
-        while(a!=b){
-            a=nums[a];
-            b=nums[b];
+        //the reason why slow=0 is because in the previous while loop terminated when slow==fast(4==4)
+        slow=0;
+        /**
+         * now Both(slow and fast) meet at 2, which is the duplicate number.
+
+But why does this happen?
+
+Think of the path:
+- From the starting point 0, it takes 3 steps to reach 2: 0 → 1 → 3 → 2.
+- From the Phase 1 meeting point 4, it takes 1 step to reach 2: 4 → 2.
+The difference is 2 steps, which is exactly one complete cycle: 2 → 4 → 2.
+
+So, both pointers reach the cycle entry at the same time when moving one step per iteration.
+
+That's the reason Phase 2 finds the duplicate: the cycle's entry point is the duplicate number.
+         */
+        while(slow!=fast){
+            slow=nums[slow];
+            fast=nums[fast];
         }
-        return a;
+        return slow;
     }
 }
 
@@ -733,24 +750,33 @@ class Solution {
 
 
 //First missing positive integer
+// input - [3,-5,7,20,1,30,2,-40,-1,5]
 class Solution {
     public int firstMissingPositive(int[] nums) {
         //we are making all the numbers that are less than or equal to 0 or greater than the length of the array to the length of the array+1
+        //in this for loop you will clean an array
         for(int i=0;i<nums.length;i++){
             if(nums[i]<=0 || nums[i]>nums.length){
                 nums[i]=nums.length+1;
             }
         }
+        // after cleaning -> [3,11,7,11,1,11,2,11,11,5]
+        // 11 doesn't make any sense we are just storing random value so that marking becomes easy
         //this for loop is used to mark the presence of the number in the array, we will mark the number by making the number at the index of the number negative
         for(int i=0;i<nums.length;i++){
             int num=Math.abs(nums[i]);
-            //if the number is greater than the length of the array then we are skipping the iteration, continue means skip the iteration and move to the next iteration
+            //if the number is greater than the length of the array then we are skipping the iteration because the that value is what we entered while cleaning the array, continue means skip the iteration and move to the next iteration
             if (num>nums.length) continue;
+            // this if condition is used to mark the nums>0 and nums<length of array negative
+            // here we use the number as the position to mark that particular element negative. for eg: 3 is the element so i will mark 3rd position/indexed element as negative, ie 3-1=2; 
             if(nums[num-1]>0){
                 nums[num-1]=-nums[num-1];
             }
         }
+        // after marking -> [-3,-11,-7,11,-1,11,-2,11,11,5]
+        // nothing landed on index 3 which means that is the position and the value as 4 will be the missing +ve number
         //this for loop is used to find the first missing positive integer, we will return the index+1 if the number is positive
+        
         for(int i=0;i<nums.length;i++){
             if(nums[i]>0){
                 return i+1;
